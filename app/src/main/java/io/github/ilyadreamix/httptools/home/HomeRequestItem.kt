@@ -42,7 +42,7 @@ fun LazyItemScope.HomeRequestItem(
     onLongPress: () -> Unit
 ) {
     val locale = LocalConfiguration.current.locales[0]
-    val chips = remember { request.chips() }
+    val chips = remember { request.uiChips() }
 
     Card(
         modifier = Modifier

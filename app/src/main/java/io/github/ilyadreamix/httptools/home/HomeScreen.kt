@@ -1,8 +1,11 @@
 package io.github.ilyadreamix.httptools.home
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
@@ -17,10 +20,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -35,17 +42,48 @@ import io.github.ilyadreamix.httptools.R
 import io.github.ilyadreamix.httptools.component.LoadingDialog
 import io.github.ilyadreamix.httptools.request.model.Request
 import io.github.ilyadreamix.httptools.request.model.stubRequestList
-import io.github.ilyadreamix.httptools.viewmodel.enumeration.ViewModelTaskState
+import io.github.ilyadreamix.httptools.utility.ifNull
+import io.github.ilyadreamix.httptools.utility.isScrollingDown
+import io.github.ilyadreamix.httptools.viewmodel.enumeration.HTViewModelTaskState
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import io.github.ilyadreamix.httptools.viewmodel.model.ViewModelTaskResult as CommonViewModelTaskResult
+import io.github.ilyadreamix.httptools.viewmodel.model.HTViewModelTaskResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
-    val topAppBarState = rememberTopAppBarState()
+    var topAppBarState by remember { mutableStateOf(TopAppBarState(0.0f, 0.0f, 0.0f)) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
 
+    val lazyColumnState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
     val requestListResult by viewModel.requestListResult.collectAsState()
+    var longPressedItemRequest by remember { mutableStateOf<Request?>(null) }
+
+    if (longPressedItemRequest != null) {
+        HomeItemDialog(
+            request = longPressedItemRequest!!,
+            onDismissRequest = { longPressedItemRequest = null },
+            onDeleteRequest = {
+                val newList = requestListResult.data!!.filterNot { it == longPressedItemRequest }
+                viewModel.updateRequestList(newList)
+
+                longPressedItemRequest = null
+            },
+            onFavouriteRequest = { favoriteTime ->
+                viewModel.updateFavouriteTime(
+                    updatedRequest = longPressedItemRequest!!,
+                    favoriteTime = System.currentTimeMillis() ifNull favoriteTime
+                )
+
+                longPressedItemRequest = null
+            },
+            onEditRequest = {
+                // TODO: Open RequestScreen
+            }
+        )
+    }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -53,23 +91,33 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
             HomeTopApplicationBar(
                 scrollBehavior = scrollBehavior,
                 onMenuClick = {
-                    // ...
+                    // TODO: Settings, help, etc.
                 },
                 onSearchClick = {
-                    // ...
+                    // TODO: Request search
                 }
             )
         },
         floatingActionButton = {
-            HomeFloatingActionButton(showTip = requestListResult.state == ViewModelTaskState.ERROR) {
-                // ...
-            }
+            HomeFloatingActionButton(
+                showTip = requestListResult.state == HTViewModelTaskState.ERROR,
+                showScrollToTopButton = lazyColumnState.isScrollingDown(),
+                onClick = {},
+                onScrollToTopRequest = {
+                    coroutineScope.launch {
+                        lazyColumnState.animateScrollToItem(0)
+                        topAppBarState = TopAppBarState(0.0f, 0.0f, 0.0f)
+                    }
+                }
+            )
         },
         contentWindowInsets = WindowInsets(0.dp)
     ) { innerPadding ->
-        when (requestListResult.state == ViewModelTaskState.LOADING) {
+        when (requestListResult.state == HTViewModelTaskState.LOADING) {
             true -> LoadingDialog()
-            else -> HomeContent(innerPadding)
+            else -> HomeContent(innerPadding, lazyColumnState) { request ->
+                longPressedItemRequest = request
+            }
         }
     }
 }
@@ -122,7 +170,9 @@ private fun HomeTopApplicationBar(
 @Composable
 private fun HomeFloatingActionButton(
     showTip: Boolean = false,
-    onClick: () -> Unit = {}
+    showScrollToTopButton: Boolean = false,
+    onClick: () -> Unit = {},
+    onScrollToTopRequest: () -> Unit = {}
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val balloonBuilder = rememberBalloonBuilder {
@@ -145,22 +195,44 @@ private fun HomeFloatingActionButton(
             Text(text = stringResource(R.string.create_tooltip))
         }
     ) { balloonWindow ->
-        ExtendedFloatingActionButton(
-            onClick = onClick,
-            modifier = Modifier.navigationBarsPadding(),
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.Create,
-                    contentDescription = null
+        AnimatedContent(
+            targetState = showScrollToTopButton,
+            label = SCROLL_TO_TOP_ANIMATION_LABEL
+        ) { animatedShowScrollToTopButton ->
+            when (animatedShowScrollToTopButton) {
+                true -> ExtendedFloatingActionButton(
+                    onClick = onScrollToTopRequest,
+                    modifier = Modifier.navigationBarsPadding(),
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowUpward,
+                            contentDescription = null
+                        )
+                    },
+                    text = {
+                        Text(text = stringResource(R.string.scroll_to_the_top))
+                    }
                 )
-            },
-            text = {
-                Text(text = stringResource(R.string.create))
+                else -> ExtendedFloatingActionButton(
+                    onClick = onClick,
+                    modifier = Modifier.navigationBarsPadding(),
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Create,
+                            contentDescription = null
+                        )
+                    },
+                    text = {
+                        Text(text = stringResource(R.string.create))
+                    }
+                )
             }
-        )
+        }
 
         if (showTip) balloonWindow.showAlignTop()
     }
 }
 
-internal typealias ViewModelTaskResult = CommonViewModelTaskResult<List<Request>>
+internal typealias ViewModelTaskResult = HTViewModelTaskResult<List<Request>>
+
+private const val SCROLL_TO_TOP_ANIMATION_LABEL = "HomeScreen.HomeFloatingActionButton.scrollToTopAnimation"

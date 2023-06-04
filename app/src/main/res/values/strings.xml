@@ -4,4 +4,9 @@
     <string name="create">Create</string>
     <string name="create_tooltip">You can create a template for a request by clicking here</string>
     <string name="no_templates">There are no request templates here yet, but you can fix that!</string>
+    <string name="scroll_to_the_top">Scroll to the top</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="add_to_favourite">Add to favourites</string>
+    <string name="remove_from_favourite">Remove from favourites</string>
 </resources>

@@ -24,7 +24,7 @@ fun stubRequestList() = (0..500).map { itemIndex ->
             )
         ),
         extensions =
-            if ((0..500).random() <= 2) listOf("favourite=${System.currentTimeMillis()}")
+            if ((0..500).random() <= 2) listOf(RequestExtension("favourite", System.currentTimeMillis().toString()))
             else listOf()
     )
 }

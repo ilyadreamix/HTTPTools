@@ -3,6 +3,7 @@ package io.github.ilyadreamix.httptools.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -34,12 +35,12 @@ internal val LightColorScheme = lightColorScheme(
 /**
  * Defines [MaterialTheme] for HTTPTools.
  * @param useDarkTheme Indicates whether to use a dark theme. Defaults to using a theme based on the system theme.
- * @param useDynamicColors Indicates whether to use dynamic colors. Only avaiToolsle for devices running Android S (API 31) and above.
+ * @param useDynamicColors Indicates whether to use dynamic colors. Only available for devices running Android S (API 31) and above.
  * @param useEdgeToEdgeScreen Indicates whether to use edge-to-edge screen mode.
  * @param content Function that defines the content of the theme.
  */
 @Composable
-fun HTTPToolsTheme(
+fun HTTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     useDynamicColors: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     useEdgeToEdgeScreen: Boolean = true,
@@ -71,5 +72,11 @@ fun HTTPToolsTheme(
         }
     }
 
-    MaterialTheme(colorScheme = colorScheme, content = content)
+    MaterialTheme(
+        colorScheme = colorScheme,
+        shapes = MaterialTheme.shapes.copy(
+            extraSmall = RoundedCornerShape(DefaultContainerSpacing) // For dropdown menu
+        ),
+        content = content
+    )
 }

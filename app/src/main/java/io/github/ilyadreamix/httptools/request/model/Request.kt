@@ -1,5 +1,7 @@
 package io.github.ilyadreamix.httptools.request.model
 
+import io.github.ilyadreamix.httptools.request.enumeration.RequestAuthType
+import io.github.ilyadreamix.httptools.request.enumeration.RequestContentType
 import io.github.ilyadreamix.httptools.request.enumeration.RequestMethod
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -32,27 +34,44 @@ data class Request(
     val id: String = UUID.randomUUID().toString(),
 
     @SerialName("extensions")
-    val extensions: List<String> = listOf()
+    var extensions: List<RequestExtension> = listOf()
 ) {
     val favouriteTime: Long? get() {
-        val favouriteExtension = extensions.find { "favourite" in it }
+        val favouriteExtension = extensions.find { it.name == "favourite" }
             ?: return null
-        return favouriteExtension.split("=")[1].toLong()
+        return favouriteExtension.value.toLong()
     }
 
-    private val contentType: String? get() {
+    private val contentType: RequestContentType? get() {
         val contentTypeHeader = headers.find { it.name == "content-type" }
             ?: return null
-        val contentTypes = listOf("json", "xml", "javascript", "html", "image", "audio", "octet-stream")
-        return contentTypes.find { it in contentTypeHeader.value }
+        return RequestContentType.values().find { contentType ->
+            contentType.filterText in contentTypeHeader.value
+        }
     }
 
-    fun chips(): List<String> {
+    private val authType: RequestAuthType? get() {
+        val authTypeHeader = headers.find { it.name == "authorization" }
+            ?: return null
+        return RequestAuthType.values().find { authType ->
+            authType.filterText in authTypeHeader.value
+        } ?: RequestAuthType.UNKNOWN
+    }
+
+    fun uiChips(): List<String> {
         val requestChips = mutableListOf<String>()
 
         contentType?.let { contentType ->
-            requestChips.add(contentType)
+            requestChips += contentType.visibleText
         }
+
+        authType?.let { authType ->
+            requestChips += authType.visibleText
+        }
+
+        if (url.startsWith("https://")) requestChips += "TLS"
+
+        if (headers.any { it.name == "cookie" }) requestChips += "Cookie"
 
         return requestChips
     }

@@ -12,16 +12,16 @@ import io.github.ilyadreamix.httptools.home.HomeScreen
  * @param navController Defines [NavHostController].
  */
 @Composable
-fun HTTPToolsNavigationHost(navController: NavHostController = rememberNavController()) {
+fun HTNavigationHost(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
-        startDestination = HTTPToolsNavigationDestination.Home.route
+        startDestination = HTNavigationDestination.Home.route
     ) {
-        composable(route = HTTPToolsNavigationDestination.Home.route) {
+        composable(route = HTNavigationDestination.Home.route) {
             HomeScreen()
         }
 
-        composable(route = HTTPToolsNavigationDestination.Create.route) {
+        composable(route = HTNavigationDestination.Create.route) {
             // ...
         }
     }
