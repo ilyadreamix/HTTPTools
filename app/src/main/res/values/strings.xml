@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HTTPTools</string>
+    <string name="create">Create</string>
+    <string name="create_tooltip">You can create a template for a request by clicking here</string>
+    <string name="no_templates">There are no request templates here yet, but you can fix that!</string>
+</resources>

@@ -1,0 +1,45 @@
+[libraries]
+accompanist-flow-layout =  { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanistFlowLayout" }
+android-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidCoreKtx" }
+android-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidLifecycleRuntimeKtx" }
+balloon-compose = { module = "com.github.skydoves:balloon-compose", version.ref = "balloonCompose" }
+compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "composeActivity" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "composeViewModel" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinAndroid" }
+koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinCompose" }
+ktor-bom = { group = "io.ktor", name = "ktor-bom", version.ref = "ktor" }
+ktor-cio = { group = "io.ktor", name = "ktor-client-cio" }
+ktor-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation" }
+ktor-core = { group = "io.ktor", name = "ktor-client-core" }
+ktor-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json" }
+kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerializationJson" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidApplication" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinAndroid" }
+kotlin-serialization-json = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerializationJson" }
+
+[versions]
+accompanistFlowLayout = "0.31.3-beta"
+androidApplication = "8.1.0-beta03"
+androidCoreKtx = "1.10.1"
+androidLifecycleRuntimeKtx = "2.6.1"
+balloonCompose = "1.5.3"
+composeActivity = "1.7.2"
+composeBom = "2023.05.01"
+composeNavigation = "2.5.3"
+composeViewModel = "2.6.1"
+koinAndroid = "3.4.0"
+koinCompose = "3.4.4"
+ktor = "2.3.0"
+kotlinAndroid = "1.8.21"
+kotlinSerializationJson = "1.5.0"
