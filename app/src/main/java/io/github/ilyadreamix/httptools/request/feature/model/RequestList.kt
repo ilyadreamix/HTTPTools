@@ -1,6 +1,6 @@
-package io.github.ilyadreamix.httptools.request.model
+package io.github.ilyadreamix.httptools.request.feature.model
 
-import io.github.ilyadreamix.httptools.request.enumeration.RequestMethod
+import io.github.ilyadreamix.httptools.request.feature.enumeration.RequestMethod
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

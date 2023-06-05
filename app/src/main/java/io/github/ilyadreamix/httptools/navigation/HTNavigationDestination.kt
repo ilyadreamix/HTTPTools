@@ -4,7 +4,7 @@ package io.github.ilyadreamix.httptools.navigation
  * [HTNavigationHost] destinations.
  * @param route Defines destination route.
  */
-sealed class HTNavigationDestination(val route: String) {
-    object Home : HTNavigationDestination("home")
-    object Request : HTNavigationDestination("request/{id}")
+enum class HTNavigationDestination(val route: String) {
+    HOME("home"),
+    REQUEST("request/{id}")
 }

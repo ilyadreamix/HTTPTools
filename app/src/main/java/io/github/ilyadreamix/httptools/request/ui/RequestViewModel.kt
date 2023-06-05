@@ -1,7 +1,7 @@
-package io.github.ilyadreamix.httptools.request
+package io.github.ilyadreamix.httptools.request.ui
 
 import androidx.lifecycle.ViewModel
-import io.github.ilyadreamix.httptools.request.model.Request
+import io.github.ilyadreamix.httptools.request.feature.model.Request
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

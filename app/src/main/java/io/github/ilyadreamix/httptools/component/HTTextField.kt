@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -27,17 +26,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * A custom [TextField] component with customizable appearance and behavior.
- * @param value The current value of the [TextField].
- * @param onValueChange The callback triggered when the value of the [TextField] changes.
- * @param modifier The modifier to be applied to the [TextField].
- * @param height The height of the [TextField] container.
- * @param shape The shape of the [TextField] container.
- * @param singleLine Whether the [TextField] should be limited to a single line.
- * @param placeholder The composable function that provides the placeholder content when the [TextField] is empty.
- * @param textStyle The style to be applied to the text displayed in the [TextField].
- * @param containerColor The color of the [TextField] container.
- * @param innerPadding The padding within the [TextField] container.
+ * A custom [BasicTextField] component with customizable appearance and behavior.
+ * @param value The current value of the [BasicTextField].
+ * @param onValueChange The callback triggered when the value of the [BasicTextField] changes.
+ * @param modifier The modifier to be applied to the [BasicTextField].
+ * @param height The height of the [BasicTextField] container.
+ * @param shape The shape of the [BasicTextField] container.
+ * @param singleLine Whether the [BasicTextField] should be limited to a single line.
+ * @param placeholder The composable function that provides the placeholder content when the [BasicTextField] is empty.
+ * @param textStyle The style to be applied to the text displayed in the [BasicTextField].
+ * @param containerColor The color of the [BasicTextField] container.
+ * @param innerPadding The padding within the [BasicTextField] container.
  */
 @Composable
 fun HTTextField(
@@ -64,8 +63,7 @@ fun HTTextField(
     Box(
         modifier = modifier.height(height)
             .clip(shape)
-            .background(containerColor),
-        contentAlignment = Alignment.CenterStart
+            .background(containerColor)
     ) {
         Box(
             modifier = Modifier

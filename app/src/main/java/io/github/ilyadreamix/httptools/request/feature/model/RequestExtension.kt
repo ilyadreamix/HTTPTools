@@ -1,13 +1,13 @@
-package io.github.ilyadreamix.httptools.request.model
+package io.github.ilyadreamix.httptools.request.feature.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RequestQuery(
+data class RequestExtension(
     @SerialName("name")
     val name: String,
 
     @SerialName("value")
-    val value: String
+    var value: String
 )

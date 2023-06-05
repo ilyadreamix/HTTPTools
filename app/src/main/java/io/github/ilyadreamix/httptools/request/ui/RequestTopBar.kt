@@ -24,25 +24,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.ilyadreamix.httptools.R
 import io.github.ilyadreamix.httptools.component.HTTextField
-import io.github.ilyadreamix.httptools.request.enumeration.RequestMethod
-import io.github.ilyadreamix.httptools.request.model.Request
+import io.github.ilyadreamix.httptools.request.feature.enumeration.RequestMethod
+import io.github.ilyadreamix.httptools.request.feature.model.Request
 import io.github.ilyadreamix.httptools.theme.*
 import io.github.ilyadreamix.httptools.utility.isScrolledDown
 import io.github.ilyadreamix.httptools.utility.isScrolledUp
+import org.koin.compose.koinInject
 
 @Composable
 fun RequestTopBar(
     lazyColumnState: LazyListState,
     onMenuClick: () -> Unit,
     onBackClick: () -> Unit,
-    request: Request? = null
+    requestViewModel: RequestViewModel = koinInject()
 ) {
-    var url by remember {
-        mutableStateOf(request?.url ?: "https://")
+    val viewModelRequest by requestViewModel.request.collectAsState()
+
+    val url by remember(viewModelRequest?.url) {
+        mutableStateOf(viewModelRequest?.url ?: "https://")
     }
-    var method by remember {
-        mutableStateOf(request?.method ?: RequestMethod.GET)
+    val method by remember(viewModelRequest?.method) {
+        mutableStateOf(viewModelRequest?.method ?: RequestMethod.GET)
     }
+
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
     }
@@ -60,11 +64,13 @@ fun RequestTopBar(
 
     val localConfiguration = LocalConfiguration.current
 
+    val unnamedString = stringResource(R.string.unnamed)
+
     Column {
         AnimatedVisibility(
             visible = lazyColumnState.isScrolledUp(),
             enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically(),
+            exit = fadeOut() + shrinkVertically()
         ) {
             Column(
                 modifier = Modifier
@@ -91,7 +97,7 @@ fun RequestTopBar(
                     }
 
                     Text(
-                        text = request?.name ?: stringResource(R.string.request),
+                        text = viewModelRequest?.name ?: unnamedString,
                         modifier = Modifier
                             .align(Alignment.Center)
                             .width(localConfiguration.screenWidthDp.dp - DefaultScreenPadding - MenuButtonSize - ItemSpacing - 4.dp),
@@ -116,11 +122,23 @@ fun RequestTopBar(
                 Row {
                     RequestMethodButton(
                         method = method,
-                        onMethodSelected = { method = it }
+                        onMethodSelected = { selectedMethod ->
+                            val newRequest = viewModelRequest?.copy(
+                                method = selectedMethod
+                            ) ?: Request(name = unnamedString, method = selectedMethod)
+
+                            requestViewModel.updateRequest(newRequest)
+                        }
                     )
                     RequestUrlTextField(
                         value = url,
-                        onValueChange = { url = it }
+                        onValueChange = { changedUrl ->
+                            val newRequest = viewModelRequest?.copy(
+                                url = changedUrl
+                            ) ?: Request(name = unnamedString, url = changedUrl)
+
+                            requestViewModel.updateRequest(newRequest)
+                        }
                     )
                 }
             }

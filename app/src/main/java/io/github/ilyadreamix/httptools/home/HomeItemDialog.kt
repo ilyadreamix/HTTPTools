@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
 import io.github.ilyadreamix.httptools.R
 import io.github.ilyadreamix.httptools.component.CardBox
-import io.github.ilyadreamix.httptools.request.model.Request
+import io.github.ilyadreamix.httptools.request.feature.model.Request
 import io.github.ilyadreamix.httptools.theme.DefaultBigAlertButtonPadding
 import io.github.ilyadreamix.httptools.theme.DefaultBigAlertButtonSpacing
 import io.github.ilyadreamix.httptools.theme.DefaultBigAlertCorners

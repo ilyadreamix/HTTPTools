@@ -2,7 +2,7 @@ package io.github.ilyadreamix.httptools
 
 import android.app.Application
 import io.github.ilyadreamix.httptools.home.homeModule
-import io.github.ilyadreamix.httptools.request.requestModule
+import io.github.ilyadreamix.httptools.request.ui.requestModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

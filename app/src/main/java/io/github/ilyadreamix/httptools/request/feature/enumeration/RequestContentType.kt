@@ -1,4 +1,4 @@
-package io.github.ilyadreamix.httptools.request.enumeration
+package io.github.ilyadreamix.httptools.request.feature.enumeration
 
 enum class RequestContentType(val filterText: String, val visibleText: String) {
     JSON("json", "JSON"),

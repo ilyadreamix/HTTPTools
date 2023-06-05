@@ -1,7 +1,7 @@
 package io.github.ilyadreamix.httptools.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import io.github.ilyadreamix.httptools.component.CardBox
-import io.github.ilyadreamix.httptools.request.enumeration.RequestMethod
-import io.github.ilyadreamix.httptools.request.model.Request
+import io.github.ilyadreamix.httptools.request.feature.enumeration.RequestMethod
+import io.github.ilyadreamix.httptools.request.feature.model.Request
 import io.github.ilyadreamix.httptools.utility.divideDp
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -39,18 +39,20 @@ import java.util.Date
 @Composable
 fun LazyItemScope.HomeRequestItem(
     request: Request,
-    onLongPress: () -> Unit
+    onLongPress: () -> Unit,
+    onClick: () -> Unit
 ) {
     val locale = LocalConfiguration.current.locales[0]
     val chips = remember { request.uiChips() }
 
     Card(
         modifier = Modifier.fillMaxWidth()
-            .pointerInput(request) {
-                detectTapGestures(onLongPress = { onLongPress() })
-            }
+            .clip(RoundedCornerShape(RequestItemCorners))
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongPress
+            )
             .animateItemPlacement(),
-        shape = RoundedCornerShape(RequestItemCorners)
     ) {
         Column(
             modifier = Modifier.padding(RequestItemInnerPadding),

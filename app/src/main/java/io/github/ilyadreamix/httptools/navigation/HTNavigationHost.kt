@@ -23,13 +23,13 @@ fun HTNavigationHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = HTNavigationDestination.Home.route
+        startDestination = HTNavigationDestination.HOME.route
     ) {
-        composable(route = HTNavigationDestination.Home.route) {
+        composable(route = HTNavigationDestination.HOME.route) {
             HomeScreen(navController)
         }
 
-        composable(route = HTNavigationDestination.Request.route) { backStackEntry ->
+        composable(route = HTNavigationDestination.REQUEST.route) { backStackEntry ->
             val requestId = backStackEntry.arguments?.getString("id")
             val requestListResult by homeViewModel.requestListResult.collectAsState()
             val request = requestListResult.data?.find { it.id == requestId }

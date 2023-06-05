@@ -13,5 +13,7 @@
     <string name="payload">Payload</string>
     <string name="headers">Headers</string>
     <string name="query">Query</string>
-    <string name="request">Request</string>
+    <string name="unnamed">Unnamed</string>
+    <string name="save">Save</string>
+    <string name="saved">Saved!</string>
 </resources>

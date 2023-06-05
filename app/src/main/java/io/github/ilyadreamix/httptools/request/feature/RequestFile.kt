@@ -1,8 +1,8 @@
-package io.github.ilyadreamix.httptools.request
+package io.github.ilyadreamix.httptools.request.feature
 
 import android.util.Log
-import io.github.ilyadreamix.httptools.request.model.Request
-import io.github.ilyadreamix.httptools.request.model.RequestList
+import io.github.ilyadreamix.httptools.request.feature.model.Request
+import io.github.ilyadreamix.httptools.request.feature.model.RequestList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString

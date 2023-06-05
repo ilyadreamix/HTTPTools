@@ -12,8 +12,8 @@ android {
         applicationId = "io.github.ilyadreamix.httptools"
         minSdk = 24
         targetSdk = 33
-        versionCode = 3
-        versionName = "1.0.2"
+        versionCode = 4
+        versionName = "1.0.3"
 
         vectorDrawables {
             useSupportLibrary = true

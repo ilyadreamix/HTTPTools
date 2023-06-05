@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import io.github.ilyadreamix.httptools.R
 import io.github.ilyadreamix.httptools.component.DashedBorderStroke
 import io.github.ilyadreamix.httptools.component.dashedBorder
-import io.github.ilyadreamix.httptools.request.model.Request
-import io.github.ilyadreamix.httptools.request.model.uiFilter
+import io.github.ilyadreamix.httptools.request.feature.model.Request
+import io.github.ilyadreamix.httptools.request.feature.model.uiFilter
 import io.github.ilyadreamix.httptools.theme.*
 import org.koin.androidx.compose.koinViewModel
 
@@ -40,7 +40,8 @@ fun HomeContent(
     innerPadding: PaddingValues,
     lazyColumnState: LazyListState,
     viewModel: HomeViewModel = koinViewModel(),
-    onLongItemPress: (Request) -> Unit = {}
+    onLongItemPress: (Request) -> Unit,
+    onItemClick: (Request) -> Unit
 ) {
     val requestListResult by viewModel.requestListResult.collectAsState()
     val sortedRequestList by remember {
@@ -56,7 +57,12 @@ fun HomeContent(
     ) {
         when (sortedRequestList.isEmpty()) {
             true -> HomeEmptyContent()
-            else -> HomeNotEmptyContent(sortedRequestList, lazyColumnState, onLongItemPress)
+            else -> HomeNotEmptyContent(
+                sortedRequestList,
+                lazyColumnState,
+                onLongItemPress,
+                onItemClick
+            )
         }
     }
 }
@@ -89,7 +95,8 @@ private fun BoxScope.HomeEmptyContent() {
 private fun HomeNotEmptyContent(
     requestList: List<Request>,
     lazyColumnState: LazyListState,
-    onLongPress: (Request) -> Unit
+    onLongItemPress: (Request) -> Unit,
+    onItemClick: (Request) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.padding(start = DefaultContainerOuterPadding, end = DefaultContainerOuterPadding),
@@ -104,7 +111,8 @@ private fun HomeNotEmptyContent(
         ) { request ->
             HomeRequestItem(
                 request = request,
-                onLongPress = { onLongPress(request) }
+                onLongPress = { onLongItemPress(request) },
+                onClick = { onItemClick(request) }
             )
         }
     }

@@ -1,8 +1,8 @@
-package io.github.ilyadreamix.httptools.request.model
+package io.github.ilyadreamix.httptools.request.feature.model
 
-import io.github.ilyadreamix.httptools.request.enumeration.RequestAuthType
-import io.github.ilyadreamix.httptools.request.enumeration.RequestContentType
-import io.github.ilyadreamix.httptools.request.enumeration.RequestMethod
+import io.github.ilyadreamix.httptools.request.feature.enumeration.RequestAuthType
+import io.github.ilyadreamix.httptools.request.feature.enumeration.RequestContentType
+import io.github.ilyadreamix.httptools.request.feature.enumeration.RequestMethod
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.UUID
@@ -10,13 +10,13 @@ import java.util.UUID
 @Serializable
 data class Request(
     @SerialName("name")
-    val name: String,
+    val name: String = "Unnamed",
 
     @SerialName("url")
-    val url: String,
+    val url: String = "https://",
 
     @SerialName("method")
-    val method: RequestMethod,
+    val method: RequestMethod = RequestMethod.GET,
 
     @SerialName("payload")
     val payload: RequestPayload? = null,

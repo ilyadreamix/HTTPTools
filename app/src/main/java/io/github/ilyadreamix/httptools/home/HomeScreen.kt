@@ -42,8 +42,8 @@ import com.skydoves.balloon.compose.setBackgroundColor
 import io.github.ilyadreamix.httptools.R
 import io.github.ilyadreamix.httptools.component.LoadingDialog
 import io.github.ilyadreamix.httptools.navigation.HTNavigationDestination
-import io.github.ilyadreamix.httptools.request.model.Request
-import io.github.ilyadreamix.httptools.request.model.stubRequestList
+import io.github.ilyadreamix.httptools.request.feature.model.Request
+import io.github.ilyadreamix.httptools.request.feature.model.stubRequestList
 import io.github.ilyadreamix.httptools.utility.ifNull
 import io.github.ilyadreamix.httptools.utility.isScrolledDown
 import io.github.ilyadreamix.httptools.viewmodel.enumeration.HTViewModelTaskState
@@ -84,7 +84,7 @@ fun HomeScreen(
                 longPressedItemRequest = null
             },
             onEditRequest = {
-                val route = HTNavigationDestination.Request.route.replace("{id}", longPressedItemRequest!!.id)
+                val route = HTNavigationDestination.REQUEST.route.replace("{id}", longPressedItemRequest!!.id)
                 navController.navigate(route)
 
                 longPressedItemRequest = null
@@ -110,7 +110,7 @@ fun HomeScreen(
                 showTip = requestListResult.state == HTViewModelTaskState.ERROR,
                 showScrollToTopButton = lazyColumnState.isScrolledDown(),
                 onClick = {
-                    // TODO: Open RequestScreen
+                    navController.navigate(HTNavigationDestination.REQUEST.route)
                 },
                 onScrollToTopRequest = {
                     coroutineScope.launch {
@@ -124,9 +124,19 @@ fun HomeScreen(
     ) { innerPadding ->
         when (requestListResult.state == HTViewModelTaskState.LOADING) {
             true -> LoadingDialog()
-            else -> HomeContent(innerPadding, lazyColumnState) { request ->
-                longPressedItemRequest = request
-            }
+            else -> HomeContent(
+                innerPadding,
+                lazyColumnState,
+                onLongItemPress = { request ->
+                    longPressedItemRequest = request
+                },
+                onItemClick = { request ->
+                    val route = HTNavigationDestination.REQUEST.route.replace("{id}", request.id)
+                    navController.navigate(route)
+
+                    longPressedItemRequest = null
+                }
+            )
         }
     }
 }
