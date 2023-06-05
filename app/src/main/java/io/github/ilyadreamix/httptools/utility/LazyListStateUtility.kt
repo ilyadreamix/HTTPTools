@@ -8,7 +8,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 
 @Composable
-fun LazyListState.isScrollingDown(): Boolean {
+fun LazyListState.isScrolledDown(): Boolean {
     val offset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
     return remember(this) { derivedStateOf { (firstVisibleItemScrollOffset - offset) > 0 } }.value
 }
+
+@Composable
+fun LazyListState.isScrolledUp() = !isScrolledDown()

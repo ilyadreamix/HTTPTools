@@ -7,6 +7,7 @@ import io.github.ilyadreamix.httptools.request.model.Request
 import io.github.ilyadreamix.httptools.request.model.RequestExtension
 import io.github.ilyadreamix.httptools.utility.viewModelState
 import io.github.ilyadreamix.httptools.viewmodel.enumeration.HTViewModelTaskState
+import io.github.ilyadreamix.httptools.viewmodel.model.HTViewModelTaskResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,26 +20,7 @@ class HomeViewModel(filesDir: File) : ViewModel() {
 
     private val requestFile = RequestFile(filesDir)
 
-    init {
-        readRequestList()
-    }
-
-    private fun readRequestList() {
-        viewModelScope.launch {
-            _requestListResult.update {
-                it.copy(state = HTViewModelTaskState.LOADING)
-            }
-
-            val result = requestFile.readRequestList()
-
-            _requestListResult.update {
-                ViewModelTaskResult(
-                    state = result.viewModelState,
-                    data = result
-                )
-            }
-        }
-    }
+    init { readRequestList() }
 
     fun saveRequestList(requestList: List<Request>) {
         viewModelScope.launch {
@@ -79,10 +61,7 @@ class HomeViewModel(filesDir: File) : ViewModel() {
         }
     }
 
-    fun updateFavouriteTime(
-        updatedRequest: Request,
-        favoriteTime: Long? = null
-    ) {
+    fun updateFavouriteTime(updatedRequest: Request, favoriteTime: Long? = null) {
         viewModelScope.launch {
             val existingRequests = requestFile.readRequestList()?.toMutableList()
                 ?: return@launch
@@ -91,17 +70,16 @@ class HomeViewModel(filesDir: File) : ViewModel() {
                 ?: return@launch
 
             if (favoriteTime == null) {
-                requestToUpdate.extensions = requestToUpdate.extensions.filterNot { extension -> extension.name == "favourite" }
+                requestToUpdate.extensions = requestToUpdate.extensions
+                    .filterNot { extension -> extension.name == "favourite" }
             } else {
-                requestToUpdate.extensions = requestToUpdate.extensions.toMutableList().apply {
-                    add(RequestExtension("favourite", favoriteTime.toString()))
-                }
+                requestToUpdate.extensions = requestToUpdate.extensions
+                    .toMutableList()
+                    .apply { add(RequestExtension("favourite", favoriteTime.toString())) }
             }
 
-            val updatedRequestIndex = existingRequests.indexOf(updatedRequest)
-            if (updatedRequestIndex != -1) {
-                existingRequests[updatedRequestIndex] = requestToUpdate
-            }
+            existingRequests.removeIf { it.id == requestToUpdate.id }
+            existingRequests.add(0, requestToUpdate)
 
             requestFile.saveRequestList(existingRequests)
             _requestListResult.update {
@@ -109,4 +87,23 @@ class HomeViewModel(filesDir: File) : ViewModel() {
             }
         }
     }
+
+    private fun readRequestList() {
+        viewModelScope.launch {
+            _requestListResult.update {
+                it.copy(state = HTViewModelTaskState.LOADING)
+            }
+
+            val result = requestFile.readRequestList()
+
+            _requestListResult.update {
+                ViewModelTaskResult(
+                    state = result.viewModelState,
+                    data = result
+                )
+            }
+        }
+    }
 }
+
+internal typealias ViewModelTaskResult = HTViewModelTaskResult<List<Request>>

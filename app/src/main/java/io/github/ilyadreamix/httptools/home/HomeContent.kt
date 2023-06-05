@@ -31,7 +31,7 @@ import io.github.ilyadreamix.httptools.R
 import io.github.ilyadreamix.httptools.component.DashedBorderStroke
 import io.github.ilyadreamix.httptools.component.dashedBorder
 import io.github.ilyadreamix.httptools.request.model.Request
-import io.github.ilyadreamix.httptools.request.model.sortedByFavouriteTime
+import io.github.ilyadreamix.httptools.request.model.uiFilter
 import io.github.ilyadreamix.httptools.theme.*
 import org.koin.androidx.compose.koinViewModel
 
@@ -45,7 +45,7 @@ fun HomeContent(
     val requestListResult by viewModel.requestListResult.collectAsState()
     val sortedRequestList by remember {
         derivedStateOf {
-            requestListResult.data.sortedByFavouriteTime()
+            requestListResult.data.uiFilter()
         }
     }
 

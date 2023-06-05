@@ -6,5 +6,5 @@ package io.github.ilyadreamix.httptools.navigation
  */
 sealed class HTNavigationDestination(val route: String) {
     object Home : HTNavigationDestination("home")
-    object Create : HTNavigationDestination("create")
+    object Request : HTNavigationDestination("request/{id}")
 }

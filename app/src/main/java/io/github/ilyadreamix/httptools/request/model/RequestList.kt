@@ -12,6 +12,16 @@ data class RequestList(
 
 fun List<Request>?.sortedByFavouriteTime() = this?.sortedByDescending { it.favouriteTime } ?: listOf()
 
+fun List<Request>?.uiFilter(): List<Request> {
+    val favouriteRequests = this?.filter { it.favouriteTime != null }
+        .sortedByFavouriteTime()
+
+    val nonFavouriteRequests = this?.filter { it.favouriteTime == null }
+        ?: listOf()
+
+    return favouriteRequests + nonFavouriteRequests
+}
+
 fun stubRequestList() = (0..500).map { itemIndex ->
     Request(
         name = "Example $itemIndex",

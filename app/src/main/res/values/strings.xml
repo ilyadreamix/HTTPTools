@@ -9,4 +9,9 @@
     <string name="delete">Delete</string>
     <string name="add_to_favourite">Add to favourites</string>
     <string name="remove_from_favourite">Remove from favourites</string>
+    <string name="url">URL</string>
+    <string name="payload">Payload</string>
+    <string name="headers">Headers</string>
+    <string name="query">Query</string>
+    <string name="request">Request</string>
 </resources>

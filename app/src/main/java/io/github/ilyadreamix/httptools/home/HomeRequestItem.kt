@@ -45,8 +45,7 @@ fun LazyItemScope.HomeRequestItem(
     val chips = remember { request.uiChips() }
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .pointerInput(request) {
                 detectTapGestures(onLongPress = { onLongPress() })
             }

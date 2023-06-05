@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.skydoves.balloon.ArrowPositionRules
 import com.skydoves.balloon.BalloonAnimation
 import com.skydoves.balloon.BalloonSizeSpec
@@ -40,20 +41,23 @@ import com.skydoves.balloon.compose.rememberBalloonBuilder
 import com.skydoves.balloon.compose.setBackgroundColor
 import io.github.ilyadreamix.httptools.R
 import io.github.ilyadreamix.httptools.component.LoadingDialog
+import io.github.ilyadreamix.httptools.navigation.HTNavigationDestination
 import io.github.ilyadreamix.httptools.request.model.Request
 import io.github.ilyadreamix.httptools.request.model.stubRequestList
 import io.github.ilyadreamix.httptools.utility.ifNull
-import io.github.ilyadreamix.httptools.utility.isScrollingDown
+import io.github.ilyadreamix.httptools.utility.isScrolledDown
 import io.github.ilyadreamix.httptools.viewmodel.enumeration.HTViewModelTaskState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import io.github.ilyadreamix.httptools.viewmodel.model.HTViewModelTaskResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
-    var topAppBarState by remember { mutableStateOf(TopAppBarState(0.0f, 0.0f, 0.0f)) }
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
+fun HomeScreen(
+    navController: NavHostController,
+    viewModel: HomeViewModel = koinViewModel()
+) {
+    var topBarState by remember { mutableStateOf(TopAppBarState(0.0f, 0.0f, 0.0f)) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
 
     val lazyColumnState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -80,7 +84,10 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
                 longPressedItemRequest = null
             },
             onEditRequest = {
-                // TODO: Open RequestScreen
+                val route = HTNavigationDestination.Request.route.replace("{id}", longPressedItemRequest!!.id)
+                navController.navigate(route)
+
+                longPressedItemRequest = null
             }
         )
     }
@@ -88,7 +95,7 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            HomeTopApplicationBar(
+            HomeTopBar(
                 scrollBehavior = scrollBehavior,
                 onMenuClick = {
                     // TODO: Settings, help, etc.
@@ -101,12 +108,14 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
         floatingActionButton = {
             HomeFloatingActionButton(
                 showTip = requestListResult.state == HTViewModelTaskState.ERROR,
-                showScrollToTopButton = lazyColumnState.isScrollingDown(),
-                onClick = {},
+                showScrollToTopButton = lazyColumnState.isScrolledDown(),
+                onClick = {
+                    // TODO: Open RequestScreen
+                },
                 onScrollToTopRequest = {
                     coroutineScope.launch {
                         lazyColumnState.animateScrollToItem(0)
-                        topAppBarState = TopAppBarState(0.0f, 0.0f, 0.0f)
+                        topBarState = TopAppBarState(0.0f, 0.0f, 0.0f)
                     }
                 }
             )
@@ -124,7 +133,7 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeTopApplicationBar(
+private fun HomeTopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     viewModel: HomeViewModel = koinViewModel(),
     onSearchClick: () -> Unit = {},
@@ -142,6 +151,7 @@ private fun HomeTopApplicationBar(
                 )
             }
 
+            // region Will be deleted after release
             IconButton(
                 onClick = {
                     when (viewModel.requestListResult.value.data) {
@@ -155,6 +165,7 @@ private fun HomeTopApplicationBar(
                     contentDescription = null
                 )
             }
+            // endregion
 
             IconButton(onMenuClick) {
                 Icon(
@@ -232,7 +243,5 @@ private fun HomeFloatingActionButton(
         if (showTip) balloonWindow.showAlignTop()
     }
 }
-
-internal typealias ViewModelTaskResult = HTViewModelTaskResult<List<Request>>
 
 private const val SCROLL_TO_TOP_ANIMATION_LABEL = "HomeScreen.HomeFloatingActionButton.scrollToTopAnimation"

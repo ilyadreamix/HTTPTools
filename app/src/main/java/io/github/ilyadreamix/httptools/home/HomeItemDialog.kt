@@ -1,4 +1,4 @@
-// This shit just had me go 🤡
+// This shit just made me go 🤡
 
 package io.github.ilyadreamix.httptools.home
 
